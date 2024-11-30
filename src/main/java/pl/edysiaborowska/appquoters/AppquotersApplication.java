@@ -31,9 +31,19 @@ public class AppquotersApplication {
 	@Profile("!test")
 	public CommandLineRunner run(RestTemplate restTemplate) throws Exception {
 		return args -> {
-			Quote quote = restTemplate.getForObject(
-					"http://localhost:8081/api/random", Quote.class);
-			log.info(quote.toString());
+			// Metoda GET
+			Quote quote = restTemplate.getForObject("http://localhost:8081/api/random", Quote.class);
+			log.info("GET: {}", quote);
+
+			// Metoda POST
+			QuoteRequest newQuoteRequest = new QuoteRequest("This is a new quote.");
+			Quote createdQuote = restTemplate.postForObject("http://localhost:8081/api/quote", newQuoteRequest, Quote.class);
+			log.info("POST: {}", createdQuote);
+
+			// Metoda DELETE
+			String deleteUrl = "http://localhost:8081/api/quote/3" ;
+			restTemplate.delete(deleteUrl);
+			log.info("DELETE: Usunięto cytat o ID 2");
 		};
 	}
 }
